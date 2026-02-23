@@ -64,7 +64,10 @@ jobs:
 
       - name: Run Container
         run: docker run -d --name staging-container myapp:staging-latest
-
+      - name: Show Container Logs
+        run: |
+         sleep 5
+         docker logs staging-container
       - name: Smoke Test
         run: |
           sleep 5
