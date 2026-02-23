@@ -1,5 +1,9 @@
 name: Staging Deployment
 
+permissions:
+  actions: read
+  contents: read
+
 on:
   workflow_run:
     workflows: ["CI Pipeline"]
@@ -20,6 +24,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: build-artifact
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build Docker Image
         run: docker build -t myapp:staging-latest .
