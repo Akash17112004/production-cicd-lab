@@ -63,9 +63,9 @@ jobs:
         run: docker build -t myapp:staging-latest .
 
       - name: Run Container
-        run: docker run -d -p 3000:3000 myapp:staging-latest
+        run: docker run -d --name staging-container myapp:staging-latest
 
       - name: Smoke Test
         run: |
           sleep 5
-          curl -f http://localhost:3000 || exit 1
+          docker exec staging-container curl -f http://localhost:3000 || exit 1
