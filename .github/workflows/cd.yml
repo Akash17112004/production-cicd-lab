@@ -1,9 +1,10 @@
 name: Staging Deployment
 
 on:
-  push:
-    branches:
-      - develop
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed
 
 concurrency:
   group: staging-deploy
@@ -11,6 +12,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
