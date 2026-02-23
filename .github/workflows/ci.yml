@@ -1,9 +1,10 @@
-name: CI Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
       - 'feature/*'
+      - develop
   pull_request:
     branches:
       - main
@@ -20,37 +21,51 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 🚀 Cache Dependencies (Improves Speed)
       - name: Cache Node Modules
         uses: actions/cache@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-${{ matrix.node-version }}
 
-      # 🔁 Use Matrix Node Version
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
 
-      # 📦 Install Dependencies
       - name: Install Dependencies
         run: npm install
 
-      # 🔎 Lint Check
       - name: Run Lint
         run: npm run lint
 
-      # 🧪 Run Tests with Coverage
       - name: Run Tests
         run: npm test
 
-      # 📤 Upload Artifact (Only once for Node 18)
       - name: Upload Build Artifact
         if: matrix.node-version == 18
         uses: actions/upload-artifact@v4
         with:
           name: build-artifact
           path: .
+
+  deploy-staging:
+    needs: test
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact
+
+      - name: Build Docker Image
+        run: docker build -t myapp:staging-latest .
+
+      - name: Run Container
+        run: docker run -d -p 3000:3000 myapp:staging-latest
+
+      - name: Smoke Test
+        run: |
+          sleep 5
+          curl -f http://localhost:3000 || exit 1
