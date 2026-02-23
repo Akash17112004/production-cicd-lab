@@ -14,15 +14,15 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16, 18]
+        node-version: [18, 20]
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # 🚀 Cache Dependencies (Improves Speed)
       - name: Cache Node Modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ matrix.node-version }}-${{ hashFiles('**/package-lock.json') }}
@@ -31,7 +31,7 @@ jobs:
 
       # 🔁 Use Matrix Node Version
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -50,7 +50,7 @@ jobs:
       # 📤 Upload Artifact (Only once for Node 18)
       - name: Upload Build Artifact
         if: matrix.node-version == 18
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifact
           path: .
