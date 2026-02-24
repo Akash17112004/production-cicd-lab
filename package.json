@@ -1,0 +1,44 @@
+{
+  "name": "production-cicd-lab",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+  "start": "node server.js",
+  "test": "jest --coverage",
+  "lint": "eslint .",
+  "build": "mkdir -p dist && cp -r server.js package.json node_modules dist/"
+},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Akash17112004/production-cicd-lab.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Akash17112004/production-cicd-lab/issues"
+  },
+  "homepage": "https://github.com/Akash17112004/production-cicd-lab#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^10.0.1",
+    "jest": "^30.2.0",
+    "supertest": "^7.2.2"
+  },
+  "jest": {
+  "coverageThreshold": {
+    "global": {
+      "branches": 80,
+      "functions": 80,
+      "lines": 80,
+      "statements": 80
+    }
+  }
+}
+}
