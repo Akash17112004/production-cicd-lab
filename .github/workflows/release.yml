@@ -19,6 +19,11 @@ jobs:
         id: commit
         run: echo "message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
 
+      - name: Sync with Remote
+        run: |
+          git fetch origin main
+          git pull origin main --rebase
+
       - name: Determine Version Bump
         id: version
         run: |
@@ -41,9 +46,6 @@ jobs:
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-
-          git fetch origin main
-          git pull origin main --rebase
 
           git add version.txt
           git commit -m "chore: bump version to ${{ steps.version.outputs.new_version }}" || echo "No changes to commit"
