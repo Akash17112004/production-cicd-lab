@@ -1,0 +1,39 @@
+name: Production Rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Tag version to rollback to (example: v1.2.0)"
+        required: true
+
+jobs:
+  rollback:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Checkout Specific Version
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.version }}
+
+      - name: Build Docker Image
+        run: docker build -t app:rollback .
+
+      - name: Stop Current Container
+        run: |
+          docker stop prod || true
+          docker rm prod || true
+
+      - name: Run Rolled Back Version
+        run: docker run -d -p 3000:3000 --name prod app:rollback
+
+      - name: Health Check
+        run: |
+          sleep 5
+          STATUS=$(curl -o /dev/null -s -w "%{http_code}" http://localhost:3000)
+          if [ "$STATUS" -ne 200 ]; then
+            echo "Rollback health check failed"
+            exit 1
+          fi
