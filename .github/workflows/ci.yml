@@ -26,12 +26,5 @@ jobs:
       - name: Run Lint
         run: npm run lint
 
-      - name: Run Tests (Coverage enforced by Jest)
+      - name: Run Tests
         run: npm test
-
-      - name: Upload Build Artifact
-        if: matrix.node-version == 18
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-artifact
-          path: .
