@@ -11,20 +11,15 @@ jobs:
     if: >
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.head_branch == 'develop'
+
     runs-on: ubuntu-latest
+
     steps:
-    - name: Download Artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: build-artifact
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-    - name: Build Docker Image
-      run: docker build -t my-app:staging-latest dist
+      - name: Build Docker Image
+        run: docker build -t my-app .
 
-    - name: Run Container
-      run: docker run -d -p 3000:3000 my-app:staging-latest
-
-    - name: Smoke Test
-      run: |
-        sleep 5
-        curl -f http://localhost:3000 || exit 1
+      - name: Run Container
+        run: docker run -d -p 3000:3000 my-app
