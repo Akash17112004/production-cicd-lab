@@ -9,8 +9,7 @@
   "scripts": {
   "start": "node server.js",
   "test": "jest --coverage",
-  "lint": "eslint .",
-  "build": "mkdir -p dist && cp -r server.js package.json node_modules dist/"
+  "lint": "eslint ."
 },
   "repository": {
     "type": "git",
